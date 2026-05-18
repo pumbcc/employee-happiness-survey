@@ -8,6 +8,7 @@ type Employee = {
   empId: string;
   name: string;
   department: string;
+  division: string;
 };
 
 export default function Home() {
@@ -100,7 +101,7 @@ export default function Home() {
             <input
               value={empId}
               onChange={e => setEmpId(e.target.value)}
-              placeholder="เช่น 12345"
+              placeholder="กรอกรหัสพนักงาน"
               onKeyDown={e => e.key === "Enter" && login()}
             />
             {loginError && <div className="error">{loginError}</div>}
@@ -136,7 +137,10 @@ export default function Home() {
         </div>
         <div className="user-card">
           <strong>{employee.name || employee.empId}</strong>
-          <span>{employee.department || "ไม่ระบุแผนก"}</span>
+          <span>
+  {employee.department || "ไม่ระบุแผนก"}
+  {employee.division ? ` • ${employee.division}` : ""}
+</span>
         </div>
       </header>
 
