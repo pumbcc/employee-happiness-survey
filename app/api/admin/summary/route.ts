@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
     const { data, error } = await supabaseAdmin
       .from("responses")
-      .select("id, emp_id, answers, open_answer_1, open_answer_2, average_score, created_at, employees(name, department)")
+      .select("id, emp_id, answers, open_answer_1, open_answer_2, average_score, created_at, employees(name, department, division)")
       .order("created_at", { ascending: false });
 
     if (error) {
