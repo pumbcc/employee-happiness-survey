@@ -49,6 +49,10 @@ export default function AdminPage() {
     setData(result);
   }
 
+  function isHQEmployee() {
+  return employee?.department === "สำนักงานใหญ่";
+}
+
   const filteredResponses = useMemo(() => {
     if (!data) return [];
 
@@ -344,3 +348,4 @@ export default function AdminPage() {
     </main>
   );
 }
+

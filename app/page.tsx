@@ -56,9 +56,16 @@ export default function Home() {
   }
 
   function canGoNext() {
-    const scaleQuestions = currentSection.questions.filter(q => q.type === "scale");
-    return scaleQuestions.every(q => answers[q.id]);
-  }
+  const scaleQuestions = currentSection.questions
+    .filter((q) => q.type === "scale")
+    .filter((q) => !q.hqOnly || isHQEmployee());
+
+  return scaleQuestions.every((q) => answers[q.id]);
+}
+
+  function isHQEmployee() {
+  return employee?.department === "สำนักงานใหญ่";
+}
 
   async function submit() {
     if (!employee) return;
@@ -155,7 +162,9 @@ export default function Home() {
       <section className="question-card">
         <div className="section-count">หน้าที่ {step + 1} / {sections.length}</div>
 
-        {currentSection.questions.map((q, index) => (
+        {currentSection.questions
+  .filter((q) => !q.hqOnly || isHQEmployee())
+  .map((q, index) => (
           <div className="question-block" key={q.id}>
             <h3>{index + 1}. {q.text}</h3>
 

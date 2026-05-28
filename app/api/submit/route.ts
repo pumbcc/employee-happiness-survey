@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
-import { sections, totalScaleQuestions } from "@/lib/questions";
+import { sections } from "@/lib/questions";
 
 export async function POST(request: Request) {
   try {
@@ -11,10 +11,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "ไม่พบรหัสพนักงาน" }, { status: 400 });
     }
 
-    const scaleIds = sections
-      .flatMap(section => section.questions)
-      .filter(q => q.type === "scale")
-      .map(q => q.id);
+   const { data: employee } = await supabaseAdmin
+  .from("employees")
+  .select("emp_id, department")
+  .eq("emp_id", empId.trim())
+  .single();
+
+const isHQ = employee?.department === "สำนักงานใหญ่";
+
+const scaleIds = sections
+  .flatMap(section => section.questions)
+  .filter(q => q.type === "scale")
+  .filter(q => !q.hqOnly || isHQ)
+  .map(q => q.id);
 
     const missing = scaleIds.filter(id => !answers?.[id]);
     if (missing.length > 0) {
@@ -31,7 +40,7 @@ export async function POST(request: Request) {
     }
 
     const averageScore =
-      Object.values(numericAnswers).reduce((sum, value) => sum + value, 0) / totalScaleQuestions;
+      Object.values(numericAnswers).reduce((sum, value) => sum + value, 0) / scaleIds.length;
 
     const { error } = await supabaseAdmin.from("responses").insert({
       emp_id: empId.trim(),
