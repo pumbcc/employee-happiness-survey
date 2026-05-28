@@ -26,6 +26,7 @@ export default function Home() {
   const [submitted, setSubmitted] = useState(false);
 
   const currentSection = sections[step];
+  const isHQ = employee?.department === "สำนักงานใหญ่";
 
   const progress = useMemo(() => {
     const allScale = sections.flatMap(s => s.questions).filter(q => q.type === "scale");
@@ -58,13 +59,9 @@ export default function Home() {
   function canGoNext() {
   const scaleQuestions = currentSection.questions
     .filter((q) => q.type === "scale")
-    .filter((q) => !q.hqOnly || isHQEmployee());
+   .filter((q) => !q.hqOnly || isHQ)
 
   return scaleQuestions.every((q) => answers[q.id]);
-}
-
-  function isHQEmployee() {
-  return employee?.department === "สำนักงานใหญ่";
 }
 
   async function submit() {
@@ -163,7 +160,7 @@ export default function Home() {
         <div className="section-count">หน้าที่ {step + 1} / {sections.length}</div>
 
         {currentSection.questions
-  .filter((q) => !q.hqOnly || isHQEmployee())
+ .filter((q) => !q.hqOnly || isHQ)
   .map((q, index) => (
           <div className="question-block" key={q.id}>
             <h3>{index + 1}. {q.text}</h3>

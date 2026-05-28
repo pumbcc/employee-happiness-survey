@@ -1,8 +1,4 @@
-export type Question = {
-  id: string;
-  text: string;
-  type: "scale" | "open";
-};
+
 
 export type Section = {
   title: string;
