@@ -111,7 +111,7 @@ export default function Home() {
             {loginError && <div className="error">{loginError}</div>}
             <button onClick={login} disabled={loading}>
               <LockKeyhole size={18} />
-              {loading ? "กำลังตรวจสอบ..." : "เข้าสู่ระบบ"}
+              {loading ? "กำลังตรวจสอบ..." : "เริ่มทำแบบสำรวจ"}
             </button>
           </div>
         </section>
