@@ -96,7 +96,7 @@ export default function Home() {
     return (
       <main className="page-shell login-page">
         <section className="login-card">
-          <div className="brand-pill"><Sparkles size={16} /> Happiness Survey</div>
+          <div className="brand-pill"><Sparkles size={16} /> Happiness Survey 2026</div>
           <h1>แบบสำรวจความสุขพนักงาน</h1>
           <p>กรอกรหัสพนักงานเพื่อเข้าสู่แบบฟอร์ม</p>
 
@@ -135,7 +135,7 @@ export default function Home() {
     <main className="page-shell">
       <header className="survey-header">
         <div>
-          <div className="brand-pill">Employee Happiness Survey</div>
+          <div className="brand-pill">Happiness Survey 2026</div>
           <h1>{currentSection.title}</h1>
           <p>{currentSection.subtitle}</p>
         </div>
@@ -168,7 +168,7 @@ export default function Home() {
             {q.type === "scale" ? (
               <div className="scale-grid">
                 {[1, 2, 3, 4, 5, 6].map(value => (
-                  <label className={`scale-choice ${answers[q.id] === value ? "active" : ""}`} key={value}>
+                  <label className={`scale-choice ${answers[q.id] === value ? "active" : ""}`} data-score={value} key={value}>
                     <input
                       type="radio"
                       name={q.id}

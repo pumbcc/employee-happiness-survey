@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Employee Happiness Survey",
+  title: "Happiness Survey 2026",
   description: "Happiness Survey",
 };
 

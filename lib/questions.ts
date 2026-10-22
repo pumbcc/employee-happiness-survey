@@ -24,7 +24,7 @@ export type Question = {
 
 export const sections: Section[] = [
   {
-    title: "ความพึงพอใจโดยรวม",
+    title: "ความสุขโดยรวม",
     subtitle: "Overall Happiness",
     questions: [
       { id: "q01", type: "scale", text: "ฉันมีความสุขกับงานปัจจุบัน" },

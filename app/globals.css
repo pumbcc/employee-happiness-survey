@@ -261,15 +261,26 @@ button.secondary {
   line-height: 1.35;
 }
 
+.scale-choice[data-score="1"] { --scale-color: #991b1b; --scale-tint: #fef2f2; }
+.scale-choice[data-score="2"] { --scale-color: #c2410c; --scale-tint: #fff7ed; }
+.scale-choice[data-score="3"] { --scale-color: #a16207; --scale-tint: #fefce8; }
+.scale-choice[data-score="4"] { --scale-color: #4d7c0f; --scale-tint: #f7fee7; }
+.scale-choice[data-score="5"] { --scale-color: #15803d; --scale-tint: #f0fdf4; }
+.scale-choice[data-score="6"] { --scale-color: #14532d; --scale-tint: #ecfdf5; }
+
 .scale-choice.active {
-  border-color: var(--primary);
-  background: linear-gradient(135deg, #edf4ff, #ffffff);
-  box-shadow: 0 14px 30px rgba(21,101,255,.14);
+  border-color: var(--scale-color);
+  background: var(--scale-tint);
+  box-shadow: 0 0 0 1px var(--scale-color);
   transform: translateY(-2px);
 }
 
+.scale-choice.active .label {
+  color: var(--scale-color);
+}
+
 .scale-choice.active .score {
-  background: var(--primary);
+  background: var(--scale-color);
   color: white;
 }
 
