@@ -37,7 +37,7 @@ export default function LoginLanding({ empId, onEmpIdChange, onStart, loading, e
         <div className="campaign-art">
           <div className="campaign-orbit" aria-hidden="true" />
           <div className="campaign-layers">
-            <Image className="campaign-lettering" src="/images/happiness-lettering.png" width={1080} height={1350} alt="" aria-hidden="true" priority sizes="(max-width: 760px) 88vw, 550px" />
+            <Image className="campaign-lettering" src="/images/happiness-lettering-full.png" width={14536} height={8508} alt="" aria-hidden="true" priority sizes="(max-width: 760px) 88vw, 550px" />
             <Image className="campaign-person" src="/images/happiness-person.png" width={1080} height={1350} alt="พนักงานยิ้มแย้ม ร่วมแคมเปญสำรวจความสุขและความผูกพัน" priority sizes="(max-width: 760px) 88vw, 550px" />
           </div>
           <div className="campaign-sticker" aria-hidden="true"><Smile size={36} strokeWidth={1.4} /><span>HAPPINESS<br />STARTS WITH YOU</span></div>

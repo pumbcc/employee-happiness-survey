@@ -500,10 +500,10 @@ select {
 
 .campaign-layers { position: relative; aspect-ratio: 1080 / 1120; overflow: hidden; isolation: isolate; }
 .campaign-layers img { position: absolute; bottom: 0; left: 0; display: block; width: 100%; height: auto; }
-.campaign-lettering { z-index: 0; animation: campaign-letter-drift 12s ease-in-out infinite; }
+.campaign-layers .campaign-lettering { bottom: auto; top: 6%; left: 2%; width: 96%; z-index: 0; animation: campaign-letter-drift 12s ease-in-out infinite; }
 .campaign-person { z-index: 1; filter: drop-shadow(0 18px 14px #6e461a20); animation: campaign-person-float 8s ease-in-out infinite; }
 .campaign-sticker { z-index: 2; top: 12%; right: -14px; }
-@keyframes campaign-letter-drift { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-12px); } }
+@keyframes campaign-letter-drift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
 @keyframes campaign-person-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 select:focus-visible { border-color: var(--primary-dark); box-shadow: 0 0 0 4px #d96a1424; }
 button:focus-visible { outline: 3px solid var(--primary-dark); outline-offset: 3px; }
