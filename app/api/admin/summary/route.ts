@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { timingSafeEqual } from "node:crypto";
+import { verifyAdminPin } from "@/lib/admin-auth";
 import { sections } from "@/lib/questions";
 import { readAllRows } from "@/lib/survey-data";
 import { buildAggregateReport, type ReportEmployee, type ReportResponse } from "@/lib/report";
@@ -22,9 +22,7 @@ export async function POST(request: Request) {
     for (const [key, value] of attempts) if (value.reset < now) attempts.delete(key);
     const attempt = attempts.get(ip);
     if (attempt && attempt.failures >= 5) return reply({ error: "กรอกรหัสไม่ถูกต้องหลายครั้ง กรุณารอ 15 นาที" }, 429);
-    const expected = Buffer.from(process.env.ADMIN_PIN || "");
-    const actual = Buffer.from(typeof pin === "string" ? pin : "");
-    if (!expected.length || expected.length !== actual.length || !timingSafeEqual(expected, actual)) {
+    if (!verifyAdminPin(pin)) {
       attempts.set(ip, { failures: (attempt?.failures || 0) + 1, reset: attempt?.reset || now + 15 * 60 * 1000 });
       return reply({ error: "รหัส Admin ไม่ถูกต้อง" }, 401);
     }
