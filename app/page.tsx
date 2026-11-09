@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { sections, scaleLabels } from "@/lib/questions";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
@@ -27,6 +27,14 @@ export default function Home() {
   const [open02, setOpen02] = useState("");
   const [submitError, setSubmitError] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [instructionsRead, setInstructionsRead] = useState(false);
+  const sectionHeading = useRef<HTMLHeadingElement>(null);
+
+  useLayoutEffect(() => {
+    if (!employee || alreadySubmitted || submitted) return;
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    if (instructionsRead) sectionHeading.current?.focus({ preventScroll: true });
+  }, [step, employee, instructionsRead, alreadySubmitted, submitted]);
 
   const currentSection = sections[step];
   const isHQ = employee?.department === "สำนักงานใหญ่";
@@ -77,12 +85,31 @@ export default function Home() {
 
   if (alreadySubmitted || submitted) return <TeamProgress />;
 
+  if (!instructionsRead) return (
+    <main className="page-shell">
+      <section className="question-card survey-introduction" aria-labelledby="instructions-title">
+        <div className="brand-pill">Employee Happiness Survey · 2026</div>
+        <h1 id="instructions-title">ยินดีต้อนรับสู่แบบสำรวจความสุขพนักงาน<br />และความผูกพัน ประจำปี 2569</h1>
+        <p>Food Passion ให้ความสำคัญกับเสียงของพนักงานทุกคน แบบสำรวจนี้จะช่วยให้เราเข้าใจประสบการณ์ในการทำงาน และนำไปพัฒนาความสุขและสภาพแวดล้อมในการทำงานร่วมกัน</p>
+        <h2>ก่อนเริ่มทำแบบสำรวจ</h2>
+        <ol>
+          <li>ตอบตามความรู้สึกและประสบการณ์จริงในการทำงานช่วง 1 ปีที่ผ่านมา ไม่มีคำตอบที่ถูกหรือผิด</li>
+          <li>เลือกคำตอบที่ตรงกับความคิดเห็นของคุณมากที่สุดเพียงข้อเดียวในแต่ละคำถาม</li>
+          <li>คำตอบจะถูกเก็บเป็นความลับและรายงานเฉพาะภาพรวม ไม่เปิดเผยคำตอบรายบุคคลต่อเพื่อนร่วมงานหรือในรายงานผล</li>
+          <li>ส่วนข้อเสนอแนะสามารถแสดงความคิดเห็นเพิ่มเติมได้ โดยไม่ต้องระบุชื่อหรือข้อมูลส่วนตัว</li>
+          <li>หลังส่งคำตอบ คุณจะดูได้ว่าเพื่อนร่วมฝ่ายหรือสาขาทำแบบสำรวจแล้วหรือยัง โดยไม่เห็นคำตอบของกันและกัน</li>
+        </ol>
+        <div className="nav-actions"><button onClick={() => setInstructionsRead(true)}>เข้าใจแล้ว เริ่มตอบแบบสำรวจ <ArrowRight size={18} /></button></div>
+      </section>
+    </main>
+  );
+
   return (
     <main className="page-shell">
       <header className="survey-header">
         <div>
           <div className="brand-pill">Employee Happiness Survey</div>
-          <h1>{currentSection.title}</h1>
+          <h1 ref={sectionHeading} tabIndex={-1}>{currentSection.title}</h1>
           <p>{currentSection.subtitle}</p>
         </div>
         <div className="user-card">
