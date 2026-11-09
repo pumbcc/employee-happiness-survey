@@ -2,7 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { sections, scaleLabels } from "@/lib/questions";
-import { ArrowLeft, ArrowRight, CheckCircle2, LockKeyhole, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
+
+import LoginLanding from "@/components/LoginLanding";
 
 type Employee = {
   empId: string;
@@ -94,28 +96,7 @@ export default function Home() {
 
   if (!employee) {
     return (
-      <main className="page-shell login-page">
-        <section className="login-card">
-          <div className="brand-pill"><Sparkles size={16} /> Happiness Survey 2026</div>
-          <h1>แบบสำรวจความสุขพนักงาน</h1>
-          <p>กรอกรหัสพนักงานเพื่อเข้าสู่แบบฟอร์ม</p>
-
-          <div className="login-box">
-            <label>รหัสพนักงาน</label>
-            <input
-              value={empId}
-              onChange={e => setEmpId(e.target.value)}
-              placeholder="กรอกรหัสพนักงาน"
-              onKeyDown={e => e.key === "Enter" && login()}
-            />
-            {loginError && <div className="error">{loginError}</div>}
-            <button onClick={login} disabled={loading}>
-              <LockKeyhole size={18} />
-              {loading ? "กำลังตรวจสอบ..." : "เริ่มทำแบบสำรวจ"}
-            </button>
-          </div>
-        </section>
-      </main>
+      <LoginLanding empId={empId} onEmpIdChange={setEmpId} onStart={login} loading={loading} error={loginError} />
     );
   }
 
@@ -135,7 +116,7 @@ export default function Home() {
     <main className="page-shell">
       <header className="survey-header">
         <div>
-          <div className="brand-pill">Happiness Survey 2026</div>
+          <div className="brand-pill">Employee Happiness Survey</div>
           <h1>{currentSection.title}</h1>
           <p>{currentSection.subtitle}</p>
         </div>

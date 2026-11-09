@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Happiness Survey 2026",
-  description: "Happiness Survey",
+  title: "Employee Happiness Survey",
+  description: "แบบสำรวจความสุขพนักงานและความผูกพัน ประจำปี 2569 — Food Passion",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
