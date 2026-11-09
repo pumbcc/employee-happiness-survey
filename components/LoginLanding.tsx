@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, CalendarDays, LoaderCircle, Smile } from "lucide-react";
+import { ArrowRight, CalendarDays, LoaderCircle, Smile, ShieldCheck } from "lucide-react";
 
 type LoginLandingProps = {
   empId: string;
@@ -25,6 +25,7 @@ export default function LoginLanding({ empId, onEmpIdChange, onStart, loading, e
           <p className="campaign-english" lang="en">Employee Happiness Survey</p>
           <p className="campaign-invite">มาเช็กอุณหภูมิความสุขไปด้วยกัน<br />เพราะทุกเสียงของคุณ มีความหมายกับเรา</p>
 
+          <div className="campaign-confidential"><ShieldCheck size={20} aria-hidden="true" /><div><strong>ตอบตามจริง เพื่อความสุขที่ดีขึ้นของเรา</strong><p>ข้อมูลจะถูกเก็บเป็นความลับและนำเสนอในภาพรวม ไม่เปิดเผยคำตอบรายบุคคลต่อเพื่อนร่วมงานหรือในรายงานผล</p><small>รายชื่อทีมจะแสดงเฉพาะสถานะว่าทำแล้วหรือยังไม่ทำ</small></div></div>
           <form className="campaign-form" onSubmit={event => { event.preventDefault(); if (!loading) void onStart(); }} aria-busy={loading}>
             <label htmlFor="campaign-employee-id">รหัสพนักงานของคุณ</label>
             <div className="campaign-input-wrap"><input id="campaign-employee-id" name="empId" value={empId} onChange={event => onEmpIdChange(event.target.value)} placeholder="กรอกรหัสพนักงาน" autoComplete="username" required disabled={loading} aria-invalid={Boolean(error)} aria-describedby={error ? "campaign-login-error" : undefined} /><span aria-hidden="true">↗</span></div>

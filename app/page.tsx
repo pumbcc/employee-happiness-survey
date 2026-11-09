@@ -2,9 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { sections, scaleLabels } from "@/lib/questions";
-import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import LoginLanding from "@/components/LoginLanding";
+import TeamProgress from "@/components/TeamProgress";
 
 type Employee = {
   empId: string;
@@ -37,25 +38,14 @@ export default function Home() {
   }, [answers]);
 
   async function login() {
-    setLoading(true);
-    setLoginError("");
-
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ empId }),
-    });
-
-    const data = await res.json();
-    setLoading(false);
-
-    if (!res.ok) {
-      setLoginError(data.error || "เข้าสู่ระบบไม่สำเร็จ");
-      return;
-    }
-
-    setEmployee(data.employee);
-    setAlreadySubmitted(data.alreadySubmitted);
+    setLoading(true); setLoginError("");
+    try {
+      const response = await fetch("/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ empId }) });
+      const data = await response.json();
+      if (!response.ok) { setLoginError(data.error || "เข้าสู่ระบบไม่สำเร็จ"); return; }
+      setEmployee(data.employee); setAlreadySubmitted(data.alreadySubmitted);
+    } catch { setLoginError("เชื่อมต่อไม่สำเร็จ กรุณาลองอีกครั้ง"); }
+    finally { setLoading(false); }
   }
 
   function canGoNext() {
@@ -67,31 +57,16 @@ export default function Home() {
 }
 
   async function submit() {
-    if (!employee) return;
-
-    setLoading(true);
-    setSubmitError("");
-
-    const res = await fetch("/api/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        empId: employee.empId,
-        answers,
-        open01,
-        open02,
-      }),
-    });
-
-    const data = await res.json();
-    setLoading(false);
-
-    if (!res.ok) {
-      setSubmitError(data.error || "ส่งข้อมูลไม่สำเร็จ");
-      return;
-    }
-
-    setSubmitted(true);
+    if (!employee || loading) return;
+    setLoading(true); setSubmitError("");
+    try {
+      const response = await fetch("/api/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ answers, open01, open02 }) });
+      const data = await response.json();
+      if (response.status === 409 && data.alreadySubmitted) { setAlreadySubmitted(true); return; }
+      if (!response.ok) { setSubmitError(data.error || "ส่งข้อมูลไม่สำเร็จ"); return; }
+      setSubmitted(true);
+    } catch { setSubmitError("เชื่อมต่อไม่สำเร็จ กรุณาลองส่งอีกครั้ง"); }
+    finally { setLoading(false); }
   }
 
   if (!employee) {
@@ -100,17 +75,7 @@ export default function Home() {
     );
   }
 
-  if (alreadySubmitted || submitted) {
-    return (
-      <main className="page-shell">
-        <section className="success-card">
-          <CheckCircle2 size={64} />
-          <h1>ขอบคุณสำหรับคำตอบ</h1>
-          <p>ระบบได้รับข้อมูลของคุณเรียบร้อยแล้ว</p>
-        </section>
-      </main>
-    );
-  }
+  if (alreadySubmitted || submitted) return <TeamProgress />;
 
   return (
     <main className="page-shell">
@@ -164,6 +129,7 @@ export default function Home() {
             ) : (
               <textarea
                 placeholder="พิมพ์คำตอบของคุณ..."
+                maxLength={4000}
                 value={q.id === "open01" ? open01 : open02}
                 onChange={e => q.id === "open01" ? setOpen01(e.target.value) : setOpen02(e.target.value)}
               />

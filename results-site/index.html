@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="th">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"><title>Happiness Survey · Private Results</title><link rel="stylesheet" href="styles.css"><script src="app.js" defer></script></head>
+<body>
+ <main id="login-screen" class="login-shell"><section class="login-card"><span class="eyebrow">HAPPINESS SURVEY / PRIVATE RESULTS</span><div class="login-symbol" aria-hidden="true">✳</div><h1>ฟังทุกเสียง<br><em>เห็นภาพรวม</em></h1><p>ผลสำรวจความสุขและความผูกพัน ประจำปี 2569<br>สำหรับผู้ดูแลที่มีรหัสเข้าถึงเท่านั้น</p><form id="login-form"><label for="admin-pin">รหัส Admin</label><input id="admin-pin" name="adminPin" type="password" autocomplete="current-password" required placeholder="กรอกรหัส Admin เดิม"><div id="login-error" class="error" role="alert" hidden></div><button id="login-button" type="submit">เปิดดูผลสำรวจ <span aria-hidden="true">↗</span></button></form><small>แสดงข้อมูลภาพรวม ไม่แสดงชื่อ รหัสพนักงาน หรือคำตอบรายบุคคล</small></section></main>
+ <div id="report-screen" hidden>
+  <header class="topbar"><div class="wordmark"><i></i> HAPPINESS / INSIGHTS</div><div class="topbar-right"><span class="private-badge">PRIVATE REPORT</span><button id="logout" class="secondary" type="button">ออกจากระบบ</button></div></header>
+  <main class="report-shell">
+   <section class="report-heading"><div><span class="eyebrow">EMPLOYEE HAPPINESS SURVEY · 2026</span><h1>ภาพรวมความสุข<br><em>และความผูกพัน</em></h1><p>ทุกเสียง สู่การพัฒนาที่ดีขึ้นร่วมกัน</p></div><button id="refresh" class="secondary" type="button">อัปเดตข้อมูล ↻</button></section>
+   <section class="filter-panel"><div><label for="department">หน่วยงาน</label><select id="department"><option value="">ทุกหน่วยงาน</option></select></div><div><label for="division">ฝ่าย / สาขา</label><select id="division"><option value="">ทุกฝ่าย / สาขา</option></select></div><button id="apply-filter" type="button">ดูภาพรวม →</button></section>
+   <div id="report-error" class="error" role="alert" hidden></div>
+   <div id="report-busy" class="notice" role="status" hidden>กำลังอัปเดตข้อมูล...</div>
+   <p class="scope-label" id="scope-label"></p>
+   <section id="metrics" class="metrics"></section>
+   <div id="privacy-notice" class="notice"></div>
+   <section class="panel"><div class="panel-heading"><div><span class="eyebrow">HAPPINESS BY DIMENSION</span><h2>คะแนนเฉลี่ยรายหมวด</h2></div><span class="muted">คะแนนเต็ม 6</span></div><div id="section-chart" class="bar-chart"></div></section>
+   <section class="ranking-grid"><div class="panel"><span class="eyebrow">STRENGTHS</span><h2>5 อันดับคะแนนสูงสุด</h2><div id="top-ranking"></div></div><div class="panel"><span class="eyebrow">OPPORTUNITIES</span><h2>5 อันดับที่ควรพัฒนา</h2><div id="bottom-ranking"></div></div></section>
+   <section class="panel"><div class="panel-heading"><div><span class="eyebrow">QUESTION OVERVIEW</span><h2>คะแนนเฉลี่ยรายข้อ</h2></div><label class="search-label" for="question-search">ค้นหาข้อคำถาม<input id="question-search" type="search" placeholder="คำค้น หรือ Q01"></label></div><div id="question-list"></div></section>
+   <section class="panel"><div class="panel-heading"><div><span class="eyebrow">PARTICIPATION</span><h2>ความคืบหน้ารายฝ่าย / สาขา</h2></div><span class="muted">จำนวนผู้ตอบเท่านั้น</span></div><div class="table-scroll"><table><thead><tr><th>หน่วยงาน</th><th>ฝ่าย / สาขา</th><th>ทำแล้ว / ทั้งหมด</th><th>ความคืบหน้า</th></tr></thead><tbody id="participation"></tbody></table></div></section>
+   <p id="updated-at" class="updated-at"></p>
+  </main>
+ </div>
+ <noscript>กรุณาเปิดใช้งาน JavaScript เพื่อเข้าดูผลสำรวจ</noscript>
+</body></html>

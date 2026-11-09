@@ -1,52 +1,41 @@
 import { NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { timingSafeEqual } from "node:crypto";
 import { sections } from "@/lib/questions";
+import { readAllRows } from "@/lib/survey-data";
+import { buildAggregateReport, type ReportEmployee, type ReportResponse } from "@/lib/report";
 
+const RESULTS_ORIGIN = "https://employee-happiness-results.vercel.app";
+const attempts = new Map<string, { failures: number; reset: number }>();
+function headers(request: Request) {
+  const origin = request.headers.get("origin");
+  return { "Cache-Control": "private, no-store", "Vary": "Origin", ...(origin === RESULTS_ORIGIN ? { "Access-Control-Allow-Origin": origin } : {}) };
+}
+export async function OPTIONS(request: Request) {
+  return new Response(null, { status: 204, headers: { ...headers(request), "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type", "Access-Control-Max-Age": "600" } });
+}
 export async function POST(request: Request) {
+  const origin = request.headers.get("origin");
+  const reply = (data: unknown, status = 200) => NextResponse.json(data, { status, headers: headers(request) });
+  if (origin && origin !== new URL(request.url).origin && origin !== RESULTS_ORIGIN) return reply({ error: "ไม่อนุญาตเว็บไซต์นี้" }, 403);
   try {
-    const { pin } = await request.json();
-
-    if (!process.env.ADMIN_PIN || pin !== process.env.ADMIN_PIN) {
-      return NextResponse.json({ error: "รหัส Admin ไม่ถูกต้อง" }, { status: 401 });
+    const { pin, department = "", division = "" } = await request.json();
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
+    const now = Date.now();
+    for (const [key, value] of attempts) if (value.reset < now) attempts.delete(key);
+    const attempt = attempts.get(ip);
+    if (attempt && attempt.failures >= 5) return reply({ error: "กรอกรหัสไม่ถูกต้องหลายครั้ง กรุณารอ 15 นาที" }, 429);
+    const expected = Buffer.from(process.env.ADMIN_PIN || "");
+    const actual = Buffer.from(typeof pin === "string" ? pin : "");
+    if (!expected.length || expected.length !== actual.length || !timingSafeEqual(expected, actual)) {
+      attempts.set(ip, { failures: (attempt?.failures || 0) + 1, reset: attempt?.reset || now + 15 * 60 * 1000 });
+      return reply({ error: "รหัส Admin ไม่ถูกต้อง" }, 401);
     }
-
-    const { data, error } = await supabaseAdmin
-      .from("responses")
-      .select("id, emp_id, answers, open_answer_1, open_answer_2, average_score, created_at, employees(name, department, division)")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    const responses = data || [];
-    const scaleQuestions = sections.flatMap(s => s.questions).filter(q => q.type === "scale");
-
-    const questionSummary = scaleQuestions.map(q => {
-      const values = responses
-        .map((r: any) => Number(r.answers?.[q.id]))
-        .filter((v: number) => !Number.isNaN(v));
-
-      const avg = values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0;
-      return {
-        id: q.id,
-        text: q.text,
-        average: Number(avg.toFixed(2)),
-        count: values.length,
-      };
-    });
-
-    const overallAverage = responses.length
-      ? responses.reduce((sum: number, r: any) => sum + Number(r.average_score || 0), 0) / responses.length
-      : 0;
-
-    return NextResponse.json({
-      totalResponses: responses.length,
-      overallAverage: Number(overallAverage.toFixed(2)),
-      questionSummary,
-      responses,
-    });
-  } catch {
-    return NextResponse.json({ error: "โหลด Dashboard ไม่สำเร็จ" }, { status: 500 });
-  }
+    attempts.delete(ip);
+    if (typeof department !== "string" || typeof division !== "string" || department.length > 300 || division.length > 300) return reply({ error: "ตัวกรองไม่ถูกต้อง" }, 400);
+    const [employees, responses] = await Promise.all([
+      readAllRows<ReportEmployee>("employees", "emp_id,department,division", true),
+      readAllRows<ReportResponse>("responses", "emp_id,answers,average_score"),
+    ]);
+    return reply(buildAggregateReport(employees, responses, sections, department, division));
+  } catch { return reply({ error: "โหลดภาพรวมไม่สำเร็จ กรุณาลองใหม่" }, 500); }
 }
