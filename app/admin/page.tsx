@@ -268,7 +268,7 @@ export default function AdminPage() {
               <XAxis dataKey="name" tick={{ fontSize: 11 }} interval={0} />
               <YAxis domain={[0, 6]} />
               <Tooltip />
-              <Bar dataKey="average" radius={[10, 10, 0, 0]} />
+              <Bar dataKey="average" fill="var(--primary)" radius={[10, 10, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -319,7 +319,7 @@ export default function AdminPage() {
                   return q?.text || label;
                 }}
               />
-              <Bar dataKey="average" radius={[0, 10, 10, 0]} />
+              <Bar dataKey="average" fill="var(--primary)" radius={[0, 10, 10, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
