@@ -23,7 +23,7 @@ async function startPreview({fixturePort=3030,appPort=3031}={}) {
   }
   if(url.pathname.startsWith('/private/')){
    const name=url.pathname==='/private/'?'index.html':url.pathname.split('/').pop();if(!['index.html','styles.css','app.js'].includes(name)){res.writeHead(404);return res.end();}
-   let content=fs.readFileSync(path.join(root,'results-site',name),'utf8');if(name==='app.js')content=content.replace('https://employee-happiness-survey.vercel.app/api/admin/summary',fixtureOrigin+'/api/admin/summary');
+   let content=fs.readFileSync(path.join(root,'results-site',name),'utf8');if(name==='app.js')content=content.replace('\"/api/results\"', '\"/api/admin/summary\"');
    res.writeHead(200,{'Content-Type':name.endsWith('.css')?'text/css':name.endsWith('.js')?'text/javascript':'text/html'});return res.end(content);
   }
   const headers={...req.headers,host:`127.0.0.1:${appPort}`};delete headers.connection;delete headers['content-length'];delete headers.origin;

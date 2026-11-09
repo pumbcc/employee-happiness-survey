@@ -1,6 +1,6 @@
 "use strict";
 // The only remote endpoint accepts the owner's Admin PIN and returns aggregates only.
-const API = "https://employee-happiness-survey.vercel.app/api/admin/summary";
+const API = ["localhost", "127.0.0.1"].includes(location.hostname) ? "/api/results" : "https://employee-happiness-survey.vercel.app/api/admin/summary";
 const $ = id => document.getElementById(id);
 let activePin = "";
 let report = null;

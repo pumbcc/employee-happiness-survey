@@ -4,11 +4,9 @@ import { sections } from "@/lib/questions";
 import { readAllRows } from "@/lib/survey-data";
 import { buildAggregateReport, type ReportEmployee, type ReportResponse } from "@/lib/report";
 
-const RESULTS_ORIGIN = "https://employee-happiness-results.vercel.app";
 const attempts = new Map<string, { failures: number; reset: number }>();
 function headers(request: Request) {
-  const origin = request.headers.get("origin");
-  return { "Cache-Control": "private, no-store", "Vary": "Origin", ...(origin === RESULTS_ORIGIN ? { "Access-Control-Allow-Origin": origin } : {}) };
+  return { "Cache-Control": "private, no-store", "Vary": "Origin" };
 }
 export async function OPTIONS(request: Request) {
   return new Response(null, { status: 204, headers: { ...headers(request), "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type", "Access-Control-Max-Age": "600" } });
@@ -16,7 +14,7 @@ export async function OPTIONS(request: Request) {
 export async function POST(request: Request) {
   const origin = request.headers.get("origin");
   const reply = (data: unknown, status = 200) => NextResponse.json(data, { status, headers: headers(request) });
-  if (origin && origin !== new URL(request.url).origin && origin !== RESULTS_ORIGIN) return reply({ error: "ไม่อนุญาตเว็บไซต์นี้" }, 403);
+  if (origin && origin !== new URL(request.url).origin) return reply({ error: "ไม่อนุญาตเว็บไซต์นี้" }, 403);
   try {
     const { pin, department = "", division = "" } = await request.json();
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
