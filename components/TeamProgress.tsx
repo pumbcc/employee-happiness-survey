@@ -1,4 +1,5 @@
 "use client";
+import DivisionParticipation from "@/components/DivisionParticipation";
 import { useCallback, useEffect, useState } from "react";
 import { CheckCircle2, Circle, LogOut, RefreshCw, Search, Users } from "lucide-react";
 
@@ -22,6 +23,7 @@ export default function TeamProgress() {
   return <main className="page-shell team-page">
     <header className="team-header"><span className="brand-pill">Employee Happiness Survey</span><button className="secondary compact-button" onClick={logout}><LogOut size={16} /> ออกจากระบบ</button></header>
     <section className="team-thanks"><CheckCircle2 size={40} aria-hidden="true" /><div><h1>ขอบคุณที่ร่วมส่งเสียง</h1><p>คุณส่งแบบสำรวจเรียบร้อยแล้ว มาช่วยติดตามความคืบหน้าในทีมไปด้วยกัน</p></div></section>
+    <DivisionParticipation />
     <section className="team-panel"><div className="team-panel-heading"><div><span className="team-eyebrow"><Users size={16} /> สถานะการทำแบบสำรวจของทีม</span><h2>{data?.team.division || "ทีมของคุณ"}</h2><p>{data?.team.department || ""}</p></div><button className="secondary compact-button" onClick={refresh} disabled={loading}><RefreshCw size={16} className={loading ? "campaign-spinner" : ""} /> {loading ? "กำลังโหลด..." : "อัปเดตสถานะ"}</button></div>
       <div className="team-privacy">แสดงเฉพาะชื่อและสถานะการทำแบบสำรวจของฝ่าย/สาขาเดียวกัน ไม่แสดงคำตอบหรือคะแนนของบุคคล</div>
       {error && <div className="error" role="alert">{error}</div>}

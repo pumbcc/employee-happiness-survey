@@ -9,3 +9,19 @@ test('team endpoint requires a signed completed-employee session and ignores req
 test('submission uses session identity, rejects invalid values, prevents duplicate writes and returns directly to team state on re-login',async()=>{const login=await call('/api/login',{empId:'A06'});const answers=Object.fromEntries(Array.from({length:36},(_,i)=>[`q${String(i+1).padStart(2,'0')}`,4]));assert.equal((await call('/api/submit',{answers})).res.status,401);assert.equal((await call('/api/submit',{answers:{...answers,q01:'NaN'}},login.cookie)).res.status,400);assert.equal((await call('/api/submit',{answers:{...answers,q01:4.5}},login.cookie)).res.status,400);const saved=await call('/api/submit',{empId:'B04',answers,open01:'fixture only'},login.cookie);assert.equal(saved.res.status,200);assert.equal(preview.responses.some(r=>r.emp_id==='A06'),true);assert.equal(preview.responses.some(r=>r.emp_id==='B04'),false);assert.equal((await call('/api/submit',{answers},login.cookie)).res.status,409);assert.equal((await call('/api/login',{empId:'A06'})).data.alreadySubmitted,true);assert.equal((await call('/api/team',null,login.cookie)).data.completed,6);assert.equal((await call('/api/login',{empId:'X01'})).res.status,401);});
 test('private reports reject wrong PIN and foreign origins and never send individual data',async()=>{assert.equal((await call('/api/admin/summary',{pin:'wrong'})).res.status,401);assert.equal((await call('/api/admin/summary',{pin:'fixture-owner-only'},null,'https://untrusted.example')).res.status,403);const result=await call('/api/admin/summary',{pin:'fixture-owner-only'});assert.equal(result.res.status,200);assert.equal(result.res.headers.get('access-control-allow-origin'),null);assert.equal(result.data.totalEmployees,13);assert.equal(result.data.overallAverage,4);for(const forbidden of ['สมาชิกทีมตัวอย่าง','PRIVATE COMMENT','"responses"','emp_id','open_answer','created_at'])assert.equal(JSON.stringify(result.data).includes(forbidden),false,forbidden);const small=await call('/api/admin/summary',{pin:'fixture-owner-only',department:'หน่วยธุรกิจตัวอย่าง'});assert.equal(small.data.totalResponses,3);assert.equal(small.data.overallAverage,null);assert.equal(small.data.suppressed,true);});
 test('missing division does not expose the rest of a business unit',async()=>{const login=await call('/api/login',{empId:'N01'});const answers=Object.fromEntries(Array.from({length:35},(_,i)=>[`q${String(i+1).padStart(2,'0')}`,4]));assert.equal((await call('/api/submit',{answers},login.cookie)).res.status,200);const team=await call('/api/team',null,login.cookie);assert.equal(team.data.total,1);assert.equal(team.data.limitedScope,true);});
+
+test('participation shows only division totals to active signed-in employees, including before submission', async () => {
+  assert.equal((await call('/api/participation')).res.status, 401);
+  preview.employees.push({ emp_id: 'UC01', name: 'UC fixture', division: ' uc ', is_active: true });
+  const pending = await call('/api/login', { empId: 'B04' });
+  assert.equal(pending.data.alreadySubmitted, false);
+  const result = await call('/api/participation', null, pending.cookie);
+  assert.equal(result.res.status, 200);
+  assert.equal(result.res.headers.get('cache-control'), 'private, no-store');
+  assert.deepEqual(result.data.divisions, [
+    { division: 'ฝ่ายตัวอย่าง A', total: 8, completed: 6 },
+    { division: 'ไม่ระบุฝ่าย', total: 1, completed: 1 },
+    { division: 'สาขาตัวอย่าง B', total: 4, completed: 3 },
+  ]);
+  assert.deepEqual(Object.keys(result.data).sort(), ['divisions', 'updatedAt']);
+});

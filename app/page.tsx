@@ -5,6 +5,7 @@ import { sections, scaleLabels } from "@/lib/questions";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import LoginLanding from "@/components/LoginLanding";
+import DivisionParticipation from "@/components/DivisionParticipation";
 import TeamProgress from "@/components/TeamProgress";
 
 type Employee = {
@@ -100,6 +101,7 @@ export default function Home() {
         </ol>
         <div className="nav-actions"><button onClick={() => setInstructionsRead(true)}>เข้าใจแล้ว เริ่มตอบแบบสำรวจ <ArrowRight size={18} /></button></div>
       </section>
+      <DivisionParticipation />
     </main>
   );
 

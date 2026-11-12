@@ -571,3 +571,10 @@ button:focus-visible { outline: 3px solid var(--primary-dark); outline-offset: 3
  .team-search input { width: 100%; }
  .team-tabs { width: 100%; justify-content: space-between; }
 }
+
+.division-participation { margin-block: 16px; }
+.division-participation summary { cursor: pointer; font-weight: 700; }
+.division-progress-list { list-style: none; display: grid; gap: 16px; margin: 16px 0 0; padding: 0; }
+.division-progress-label { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; margin-bottom: 6px; }
+.division-progress-label span { font-size: 13px; }
+.division-refresh { margin-top: 12px; }
